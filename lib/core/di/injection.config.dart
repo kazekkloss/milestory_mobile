@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:dio/dio.dart' as _i361;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:milestory_mobile/core/core_export.dart' as _i455;
@@ -26,9 +27,18 @@ import 'package:milestory_mobile/features/auth/domain/repository/auth_repository
     as _i681;
 import 'package:milestory_mobile/features/auth/domain/usecases/check_auth.dart'
     as _i430;
+import 'package:milestory_mobile/features/auth/domain/usecases/delete_user.dart'
+    as _i211;
+import 'package:milestory_mobile/features/auth/domain/usecases/login.dart'
+    as _i812;
+import 'package:milestory_mobile/features/auth/domain/usecases/logout.dart'
+    as _i308;
+import 'package:milestory_mobile/features/auth/domain/usecases/registration.dart'
+    as _i321;
+import 'package:milestory_mobile/features/auth/domain/usecases/send_password_recovery_link.dart'
+    as _i1050;
 import 'package:milestory_mobile/features/auth/presentation/bloc/auth_bloc.dart'
     as _i291;
-import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -38,13 +48,16 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
-    await gh.factoryAsync<_i460.SharedPreferences>(
-      () => registerModule.sharedPreferences,
-      preResolve: true,
-    );
     gh.lazySingleton<_i361.Dio>(() => registerModule.dio);
-    gh.lazySingleton<_i54.TokenManager>(
-      () => _i54.TokenManager(gh<_i361.Dio>(), gh<_i460.SharedPreferences>()),
+    gh.lazySingleton<_i558.FlutterSecureStorage>(
+      () => registerModule.secureStorage,
+    );
+    await gh.factoryAsync<_i54.TokenManager>(
+      () => registerModule.tokenManager(
+        gh<_i361.Dio>(),
+        gh<_i558.FlutterSecureStorage>(),
+      ),
+      preResolve: true,
     );
     gh.lazySingleton<_i620.ApiClient>(
       () => _i620.ApiClient(gh<_i361.Dio>(), gh<_i455.TokenManager>()),
@@ -61,8 +74,30 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i430.CheckAuth>(
       () => _i430.CheckAuth(gh<_i681.AuthRepository>()),
     );
+    gh.lazySingleton<_i211.DeleteUser>(
+      () => _i211.DeleteUser(gh<_i681.AuthRepository>()),
+    );
+    gh.lazySingleton<_i812.Login>(
+      () => _i812.Login(gh<_i681.AuthRepository>()),
+    );
+    gh.lazySingleton<_i308.Logout>(
+      () => _i308.Logout(gh<_i681.AuthRepository>()),
+    );
+    gh.lazySingleton<_i321.Register>(
+      () => _i321.Register(gh<_i681.AuthRepository>()),
+    );
+    gh.lazySingleton<_i1050.SendPasswordRecoveryLink>(
+      () => _i1050.SendPasswordRecoveryLink(gh<_i681.AuthRepository>()),
+    );
     gh.factory<_i291.AuthBloc>(
-      () => _i291.AuthBloc(checkAuth: gh<_i983.CheckAuth>()),
+      () => _i291.AuthBloc(
+        checkAuth: gh<_i983.CheckAuth>(),
+        login: gh<_i983.Login>(),
+        logout: gh<_i983.Logout>(),
+        register: gh<_i983.Register>(),
+        sendPasswordRecoveryLink: gh<_i983.SendPasswordRecoveryLink>(),
+        deleteUser: gh<_i983.DeleteUser>(),
+      ),
     );
     return this;
   }

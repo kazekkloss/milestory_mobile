@@ -10,57 +10,51 @@ class AppRouter {
   final BuildContext context;
   AppRouter({required this.context});
   final _rootNavigatorKey = GlobalKey<NavigatorState>();
-  //final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
   GoRouter _router() {
     return GoRouter(
       navigatorKey: _rootNavigatorKey,
-      initialLocation: '/splash',
+      initialLocation: RouteConstants.splashPath,
       refreshListenable: RouterRefreshMultiBloc([
-          RouterRefreshBloc<AuthBloc, AuthState>(
-              BlocProvider.of<AuthBloc>(context, listen: false)),
-        ]),
+        RouterRefreshBloc<AuthBloc, AuthState>(
+          BlocProvider.of<AuthBloc>(context, listen: false),
+        ),
+      ]),
       redirect: (context, state) {
         final authState = context.read<AuthBloc>().state;
         final loc = state.matchedLocation;
-
-        final isSplash = loc == '/splash';
-        final isWelcome = loc == '/auth';
+        final isSplash = loc == RouteConstants.splashPath;
 
         switch (authState.status) {
           case AuthStatus.unknown:
-            return isSplash ? null : '/splash';
+            return isSplash ? null : RouteConstants.splashPath;
 
           case AuthStatus.unauthenticated:
-            return isWelcome ? null : '/auth';
+            return loc == RouteConstants.authPath ? null : RouteConstants.authPath;
 
           case AuthStatus.authenticated:
-            if (isSplash || isWelcome) return '/home';
-            // final guideUser = context.read<GuideUserBloc>().state.guideUser;
-            // if (loc.startsWith('/dashboard') &&
-            //     !guideUser.hasSeenCreatorOnboarding) {
-            //   return '/creator-onboarding';
-            // }
-            return null;
+            return isSplash || loc == RouteConstants.authPath
+                ? RouteConstants.homePath
+                : null;
         }
       },
-
       routes: [
         GoRoute(
           parentNavigatorKey: _rootNavigatorKey,
           name: RouteConstants.splash,
-          path: '/splash',
+          path: RouteConstants.splashPath,
           builder: (context, state) => const SplashPage(),
         ),
         GoRoute(
           parentNavigatorKey: _rootNavigatorKey,
           name: RouteConstants.auth,
-          path: '/auth',
+          path: RouteConstants.authPath,
           builder: (context, state) => const AuthScreen(),
         ),
         GoRoute(
+          parentNavigatorKey: _rootNavigatorKey,
           name: RouteConstants.home,
-          path: '/home',
+          path: RouteConstants.homePath,
           builder: (context, state) => const HomeScreen(),
         ),
       ],
