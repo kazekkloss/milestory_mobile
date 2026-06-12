@@ -12,6 +12,7 @@ export 'services/token/token_manager.dart';
 export 'router/route_constants.dart';
 export 'router/router.dart';
 export 'router/stream_bloc.dart';
+export 'router/route_animation.dart';
 
 // Response
 export 'response/response.dart';
@@ -24,6 +25,7 @@ export 'utils/widgets/error_listener.dart';
 export 'utils/widgets/logo.dart';
 export 'utils/widgets/custom_elevated_button.dart';
 export 'utils/widgets/footer.dart';
+export 'utils/widgets/nav_bar.dart';
 
 // Theme
 export 'theme/colors.dart';

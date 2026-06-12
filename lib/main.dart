@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
 import 'core/core_export.dart';
 import 'features/auth/auth_export.dart';
@@ -9,7 +10,9 @@ import 'package:milestory_mobile/core/di/injection.dart' as di;
 
 void main() async {
   try {
-    WidgetsFlutterBinding.ensureInitialized();
+    final binding = WidgetsFlutterBinding.ensureInitialized();
+    FlutterNativeSplash.preserve(widgetsBinding: binding);
+
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     await dotenv.load(fileName: ".env");
     await di.init();
@@ -17,30 +20,46 @@ void main() async {
     runApp(const MileStoryApp());
   } catch (e, stack) {
     debugPrint('Błąd podczas inicjalizacji: $e\n$stack');
+    FlutterNativeSplash.remove();
     runApp(_ErrorApp(message: e.toString()));
   }
 }
 
-class MileStoryApp extends StatelessWidget {
+class MileStoryApp extends StatefulWidget {
   const MileStoryApp({super.key});
+
+  @override
+  State<MileStoryApp> createState() => _MileStoryAppState();
+}
+
+class _MileStoryAppState extends State<MileStoryApp> {
+  late final AuthBloc _authBloc;
+  late final AppRouter _appRouter;
+
+  @override
+  void initState() {
+    super.initState();
+    _authBloc = GetIt.I<AuthBloc>();
+    _appRouter = AppRouter(authBloc: _authBloc);
+  }
+
+  @override
+  void dispose() {
+    _appRouter.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => GetIt.I<AuthBloc>()..add(CheckAuthEvent()),
-        ),
+        BlocProvider.value(value: _authBloc),
       ],
-      child: Builder(
-        builder: (context) {
-          return MaterialApp.router(
-            theme: CustomTheme.darkTheme,
-            title: 'MileStory',
-            routerConfig: AppRouter(context: context).router,
-            debugShowCheckedModeBanner: false,
-          );
-        },
+      child: MaterialApp.router(
+        theme: CustomTheme.darkTheme,
+        title: 'MileStory',
+        routerConfig: _appRouter.router,
+        debugShowCheckedModeBanner: false,
       ),
     );
   }

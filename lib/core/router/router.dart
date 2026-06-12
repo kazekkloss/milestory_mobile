@@ -1,65 +1,118 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:milestory_mobile/core/router/redirect_handler.dart';
 
 import '../../features/auth/auth_export.dart';
 import '../../features/home/home_export.dart';
+import '../../features/profile/profile_export.dart';
+import '../../features/saved/saved_export.dart';
 import '../core_export.dart';
 
 class AppRouter {
-  final BuildContext context;
-  AppRouter({required this.context});
-  final _rootNavigatorKey = GlobalKey<NavigatorState>();
+  final AuthBloc _authBloc;
+  late final RouterRefreshBloc<AuthBloc, AuthState> _refreshBloc;
 
-  GoRouter _router() {
+  AppRouter({required AuthBloc authBloc}) : _authBloc = authBloc {
+    _refreshBloc = RouterRefreshBloc(_authBloc);
+  }
+
+  final _rootNavigatorKey = GlobalKey<NavigatorState>();
+  final _shellNavigatorKey = GlobalKey<NavigatorState>();
+
+  int _currentTabIndex = 0;
+  int _previousTabIndex = 0;
+
+  final tabs = const [
+    NavBarItem(initialLocation: RouteConstants.homePath, icon: Icon(Icons.home), label: ''),
+    NavBarItem(initialLocation: RouteConstants.savedPath, icon: Icon(Icons.bookmark_outline), label: ''),
+    NavBarItem(initialLocation: RouteConstants.profilePath, icon: Icon(Icons.person_outline), label: ''),
+  ];
+
+  late final Map<int, Widget> _screens = {
+    0: const HomeScreen(),
+    1: const SavedScreen(),
+    2: const ProfileScreen(),
+  };
+
+  late final GoRouter router = _buildRouter();
+
+  GoRouter _buildRouter() {
+    final redirectHandler = RedirectHandler(_authBloc);
+
     return GoRouter(
       navigatorKey: _rootNavigatorKey,
       initialLocation: RouteConstants.splashPath,
-      refreshListenable: RouterRefreshMultiBloc([
-        RouterRefreshBloc<AuthBloc, AuthState>(
-          BlocProvider.of<AuthBloc>(context, listen: false),
-        ),
-      ]),
-      redirect: (context, state) {
-        final authState = context.read<AuthBloc>().state;
-        final loc = state.matchedLocation;
-        final isSplash = loc == RouteConstants.splashPath;
-
-        switch (authState.status) {
-          case AuthStatus.unknown:
-            return isSplash ? null : RouteConstants.splashPath;
-
-          case AuthStatus.unauthenticated:
-            return loc == RouteConstants.authPath ? null : RouteConstants.authPath;
-
-          case AuthStatus.authenticated:
-            return isSplash || loc == RouteConstants.authPath
-                ? RouteConstants.homePath
-                : null;
-        }
-      },
+      refreshListenable: _refreshBloc,
+      redirect: (context, state) => redirectHandler.handleRedirect(state),
       routes: [
         GoRoute(
           parentNavigatorKey: _rootNavigatorKey,
-          name: RouteConstants.splash,
           path: RouteConstants.splashPath,
           builder: (context, state) => const SplashPage(),
         ),
         GoRoute(
           parentNavigatorKey: _rootNavigatorKey,
-          name: RouteConstants.auth,
           path: RouteConstants.authPath,
           builder: (context, state) => const AuthScreen(),
         ),
-        GoRoute(
-          parentNavigatorKey: _rootNavigatorKey,
-          name: RouteConstants.home,
-          path: RouteConstants.homePath,
-          builder: (context, state) => const HomeScreen(),
+        ShellRoute(
+          navigatorKey: _shellNavigatorKey,
+          pageBuilder: (context, state, child) {
+            return CustomAnimationPage(
+              child: NavBar(tabs: tabs, child: child),
+            );
+          },
+          routes: [
+            GoRoute(
+              path: RouteConstants.homePath,
+              pageBuilder: (context, state) {
+                _previousTabIndex = _currentTabIndex;
+                _currentTabIndex = 0;
+                return CustomShellAnimationPage(
+                  key: state.pageKey,
+                  child: _screens[0]!,
+                  currentIndex: _currentTabIndex,
+                  previousIndex: _previousTabIndex,
+                  previousScreen: _screens[_previousTabIndex],
+                );
+              },
+            ),
+            GoRoute(
+              path: RouteConstants.savedPath,
+              pageBuilder: (context, state) {
+                _previousTabIndex = _currentTabIndex;
+                _currentTabIndex = 1;
+                return CustomShellAnimationPage(
+                  key: state.pageKey,
+                  child: _screens[1]!,
+                  currentIndex: _currentTabIndex,
+                  previousIndex: _previousTabIndex,
+                  previousScreen: _screens[_previousTabIndex],
+                );
+              },
+            ),
+            GoRoute(
+              path: RouteConstants.profilePath,
+              pageBuilder: (context, state) {
+                _previousTabIndex = _currentTabIndex;
+                _currentTabIndex = 2;
+                return CustomShellAnimationPage(
+                  key: state.pageKey,
+                  child: _screens[2]!,
+                  currentIndex: _currentTabIndex,
+                  previousIndex: _previousTabIndex,
+                  previousScreen: _screens[_previousTabIndex],
+                );
+              },
+            ),
+          ],
         ),
       ],
     );
   }
 
-  GoRouter get router => _router();
+  void dispose() {
+    router.dispose();
+    _refreshBloc.dispose();
+  }
 }
