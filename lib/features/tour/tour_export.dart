@@ -9,3 +9,4 @@ export 'domain/repository/tour_repository.dart';
 // PRESENTATION
 export 'presentation/tour_bloc/tour_bloc.dart';
 export 'presentation/screens/tour_screen.dart';
+export 'presentation/screens/tour_detail_screen.dart';

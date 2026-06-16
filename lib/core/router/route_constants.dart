@@ -4,4 +4,5 @@ class RouteConstants {
   static const String homePath = '/home';
   static const String savedPath = '/saved';
   static const String profilePath = '/profile';
+  static const String tourDetailPath = '/home/tour/:id';
 }

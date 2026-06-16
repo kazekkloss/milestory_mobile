@@ -1,13 +1,19 @@
+// Flutter
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// Packages
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
-import 'package:milestory_mobile/features/tour/presentation/tour_bloc/tour_bloc.dart';
+
+// Local
 import 'core/core_export.dart';
+import 'core/di/injection.dart' as di;
 import 'features/auth/auth_export.dart';
-import 'package:milestory_mobile/core/di/injection.dart' as di;
+import 'features/map/map_export.dart';
+import 'features/tour/tour_export.dart';
 
 void main() async {
   try {
@@ -36,6 +42,7 @@ class MileStoryApp extends StatefulWidget {
 class _MileStoryAppState extends State<MileStoryApp> {
   late final AuthBloc _authBloc;
   late final TourBloc _tourBloc;
+  late final MapBloc _mapBloc;
   late final AppRouter _appRouter;
 
   @override
@@ -43,6 +50,7 @@ class _MileStoryAppState extends State<MileStoryApp> {
     super.initState();
     _authBloc = GetIt.I<AuthBloc>();
     _tourBloc = GetIt.I<TourBloc>();
+    _mapBloc = GetIt.I<MapBloc>();
     _appRouter = AppRouter(authBloc: _authBloc);
   }
 
@@ -58,6 +66,7 @@ class _MileStoryAppState extends State<MileStoryApp> {
       providers: [
         BlocProvider.value(value: _authBloc),
         BlocProvider.value(value: _tourBloc),
+        BlocProvider.value(value: _mapBloc),
       ],
       child: MaterialApp.router(
         theme: CustomTheme.darkTheme,

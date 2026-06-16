@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:milestory_mobile/core/router/redirect_handler.dart';
 
 import '../../features/auth/auth_export.dart';
+import '../../features/map/map_export.dart';
 import '../../features/profile/profile_screen.dart';
 import '../../features/tour/tour_export.dart';
 import '../../features/saved/saved_export.dart';
@@ -76,6 +77,24 @@ class AppRouter {
                   previousScreen: _screens[_previousTabIndex],
                 );
               },
+              routes: [
+                GoRoute(
+                  path: 'tour/:id',
+                  parentNavigatorKey: _rootNavigatorKey,
+                  builder: (context, state) => TourDetailScreen(
+                    tour: state.extra as Tour,
+                  ),
+                  routes: [
+                    GoRoute(
+                      path: 'map',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      builder: (context, state) => TourMapScreen(
+                        tour: state.extra as Tour,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
             GoRoute(
               path: RouteConstants.savedPath,

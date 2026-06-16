@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/map/presentation/bloc/map_bloc.dart';
 import '../../features/tour/presentation/tour_bloc/tour_bloc.dart';
 import '../core_export.dart';
 
@@ -24,6 +25,15 @@ class GlobalErrorListener extends StatelessWidget {
         ),
         // ==================== TourBloc ====================
         BlocListener<TourBloc, TourState>(
+          listenWhen: (previous, current) {
+            final prevUiEvent = (previous as dynamic).uiEvent as UiEvent?;
+            final currUiEvent = (current as dynamic).uiEvent as UiEvent?;
+            return currUiEvent != null && prevUiEvent != currUiEvent;
+          },
+          listener: (context, state) => _handleUiEvent(context, state),
+        ),
+        // ==================== MapBloc ====================
+        BlocListener<MapBloc, MapState>(
           listenWhen: (previous, current) {
             final prevUiEvent = (previous as dynamic).uiEvent as UiEvent?;
             final currUiEvent = (current as dynamic).uiEvent as UiEvent?;

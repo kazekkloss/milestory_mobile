@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 import 'package:equatable/equatable.dart';
-import '../../core_export.dart';
+
+import '../../enums/tour_status.dart';
+import '../../enums/transport_mode.dart';
 
 class Tour extends Equatable {
   final String? id;

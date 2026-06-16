@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/core_export.dart';
 import '../tour_bloc/tour_bloc.dart';
@@ -50,8 +51,11 @@ class _TourScreenState extends State<TourScreen> {
                         itemCount: state.searchedTours.length,
                         itemBuilder: (context, index) {
                           final tour = state.searchedTours[index];
-                          return ListTile(
-                            title: Text(tour.title),
+                          return GestureDetector(
+                            onTap: () => context.push('/home/tour/${tour.id}', extra: tour),
+                            child: ListTile(
+                              title: Text(tour.title),
+                            ),
                           );
                         },
                       );
