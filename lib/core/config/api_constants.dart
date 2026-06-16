@@ -13,4 +13,7 @@ class ApiConstants {
   static const String sendPasswordRecoveryLink =
       '$baseUrl/send-link-password-recovery';
   static const String deleteUser = '$baseUrl/delete-user';
+
+  // TOUR
+  static const String getToursByTitle = '$baseUrl/get-tours-by-title';
 }

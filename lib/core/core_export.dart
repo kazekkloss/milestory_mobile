@@ -1,31 +1,43 @@
-// Constants
-export 'constants/api_constanst.dart';
-export 'constants/ui_event.dart';
+// Config
+export 'config/api_constants.dart';
+
+// Enums
+export 'enums/tour_status.dart';
+export 'enums/transport_mode.dart';
+
+// Entities
+export 'domain/entities/tour_entity.dart';
+
+// Models
+export 'data/models/tour_model.dart';
+
+// Error
+export 'error/ui_event.dart';
+export 'error/response.dart';
 
 // Network
 export 'network/api_client.dart';
 
 // Services
-export 'services/token/token_manager.dart';
+export 'services/token_manager.dart';
 
 // Router
 export 'router/route_constants.dart';
 export 'router/router.dart';
-export 'router/stream_bloc.dart';
+export 'router/router_refresh_bloc.dart';
 export 'router/route_animation.dart';
 
-// Response
-export 'response/response.dart';
+// Extensions
+export 'extensions/size_extensions.dart';
 
-// Utils
-export 'utils/size_extensions.dart';
-export 'utils/widgets/app_container.dart';
-export 'utils/widgets/text_form_field.dart';
-export 'utils/widgets/error_listener.dart';
-export 'utils/widgets/logo.dart';
-export 'utils/widgets/custom_elevated_button.dart';
-export 'utils/widgets/footer.dart';
-export 'utils/widgets/nav_bar.dart';
+// Widgets
+export 'widgets/app_container.dart';
+export 'widgets/text_form_field.dart';
+export 'widgets/error_listener.dart';
+export 'widgets/logo.dart';
+export 'widgets/custom_elevated_button.dart';
+export 'widgets/footer.dart';
+export 'widgets/nav_bar.dart';
 
 // Theme
 export 'theme/colors.dart';

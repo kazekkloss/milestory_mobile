@@ -37,8 +37,8 @@ class SizeConfig {
     _context = context;
   }
 
+  static const double horizontalPadding = 25.0;
   static const double sidePanelWidth = 360;
   static const double authFormHeight = 560;
   static const double kPillWidth = 120.0;
-  static const double kTextFormFieldWidth = 320.0;
 }

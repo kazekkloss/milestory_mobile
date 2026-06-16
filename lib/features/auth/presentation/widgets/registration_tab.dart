@@ -42,7 +42,7 @@ class _RegisterTabState extends State<RegisterTab> {
     return Form(
       key: _formKey,
       child: Padding(
-        padding: const EdgeInsets.only(top: 30),
+        padding: const EdgeInsets.only(top: 30, left: SizeConfig.horizontalPadding, right: SizeConfig.horizontalPadding),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           spacing: 10,
@@ -97,18 +97,13 @@ class _RegisterTabState extends State<RegisterTab> {
                 return null;
               },
             ),
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: SizeConfig.kTextFormFieldWidth,
-              ),
-              child: RegulationsWidget(
-                isChecked: _consent,
-                isError: _showConsentErr,
-                onCheckboxChanged: (v) => setState(() {
-                  _consent = v ?? false;
-                  if (_consent) _showConsentErr = false;
-                }),
-              ),
+            RegulationsWidget(
+              isChecked: _consent,
+              isError: _showConsentErr,
+              onCheckboxChanged: (v) => setState(() {
+                _consent = v ?? false;
+                if (_consent) _showConsentErr = false;
+              }),
             ),
             BlocBuilder<AuthBloc, AuthState>(
               builder: (context, state) {

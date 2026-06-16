@@ -3,8 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:milestory_mobile/core/router/redirect_handler.dart';
 
 import '../../features/auth/auth_export.dart';
-import '../../features/home/home_export.dart';
-import '../../features/profile/profile_export.dart';
+import '../../features/profile/profile_screen.dart';
+import '../../features/tour/tour_export.dart';
 import '../../features/saved/saved_export.dart';
 import '../core_export.dart';
 
@@ -29,7 +29,7 @@ class AppRouter {
   ];
 
   late final Map<int, Widget> _screens = {
-    0: const HomeScreen(),
+    0: const TourScreen(),
     1: const SavedScreen(),
     2: const ProfileScreen(),
   };

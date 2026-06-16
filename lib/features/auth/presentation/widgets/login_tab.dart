@@ -46,7 +46,7 @@ class _LoginTabState extends State<LoginTab> {
     return Form(
       key: _formKey,
       child: Padding(
-        padding: const EdgeInsets.only(top: 30),
+        padding: const EdgeInsets.only(top: 30, left: SizeConfig.horizontalPadding, right: SizeConfig.horizontalPadding),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           spacing: 10,
@@ -85,23 +85,18 @@ class _LoginTabState extends State<LoginTab> {
                 return null;
               },
             ),
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: SizeConfig.kTextFormFieldWidth,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton(
-                  onPressed: widget.onTap,
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  child: Text(
-                    'Zapomniałem hasła',
-                    style: tt.labelMedium!.copyWith(color: c.accent),
-                  ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                onPressed: widget.onTap,
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(
+                  'Zapomniałem hasła',
+                  style: tt.labelMedium!.copyWith(color: c.accent),
                 ),
               ),
             ),

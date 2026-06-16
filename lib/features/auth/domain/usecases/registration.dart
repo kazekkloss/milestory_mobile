@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import '../../../../core/response/response.dart';
+import '../../../../core/error/response.dart';
 import '../repository/auth_repository.dart';
 
 @lazySingleton

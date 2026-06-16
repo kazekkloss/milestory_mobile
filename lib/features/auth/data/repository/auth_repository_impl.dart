@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import 'package:milestory_mobile/core/response/response.dart';
+import 'package:milestory_mobile/core/error/response.dart';
 import '../../auth_export.dart';
 
 @LazySingleton(as: AuthRepository)

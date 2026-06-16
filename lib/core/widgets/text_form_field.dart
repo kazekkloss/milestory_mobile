@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../size_extensions.dart';
-
 class AppTextFormField extends StatelessWidget {
   final FocusNode? focusNode;
   final String descriptionText;
@@ -13,7 +11,6 @@ class AppTextFormField extends StatelessWidget {
   final Widget? suffixIcon;
   final int? maxLength;
   final int? maxLines;
-  final double? maxWidth;
 
   const AppTextFormField({
     super.key,
@@ -27,12 +24,11 @@ class AppTextFormField extends StatelessWidget {
     this.focusNode,
     this.maxLength,
     this.maxLines = 1,
-    this.maxWidth = SizeConfig.kTextFormFieldWidth,
   });
 
   @override
   Widget build(BuildContext context) {
-    final child = Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(descriptionText, style: Theme.of(context).textTheme.labelMedium),
@@ -55,12 +51,5 @@ class AppTextFormField extends StatelessWidget {
         ),
       ],
     );
-
-    return maxWidth != null
-        ? ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: maxWidth!),
-            child: child,
-          )
-        : child;
   }
 }

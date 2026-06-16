@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
-import '../services/token/token_manager.dart';
+import '../services/token_manager.dart';
 import 'injection.config.dart';
 
 final getIt = GetIt.instance;

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
+import 'package:milestory_mobile/features/tour/presentation/tour_bloc/tour_bloc.dart';
 import 'core/core_export.dart';
 import 'features/auth/auth_export.dart';
 import 'package:milestory_mobile/core/di/injection.dart' as di;
@@ -34,12 +35,14 @@ class MileStoryApp extends StatefulWidget {
 
 class _MileStoryAppState extends State<MileStoryApp> {
   late final AuthBloc _authBloc;
+  late final TourBloc _tourBloc;
   late final AppRouter _appRouter;
 
   @override
   void initState() {
     super.initState();
     _authBloc = GetIt.I<AuthBloc>();
+    _tourBloc = GetIt.I<TourBloc>();
     _appRouter = AppRouter(authBloc: _authBloc);
   }
 
@@ -54,6 +57,7 @@ class _MileStoryAppState extends State<MileStoryApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: _authBloc),
+        BlocProvider.value(value: _tourBloc),
       ],
       child: MaterialApp.router(
         theme: CustomTheme.darkTheme,

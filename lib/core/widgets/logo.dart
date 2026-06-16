@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../theme/colors.dart';
+import '../theme/colors.dart';
 
 class LogoWidget extends StatelessWidget {
   final bool _compact;
@@ -14,10 +14,6 @@ class LogoWidget extends StatelessWidget {
     return _compact ? _buildCompact(context) : _buildFull(context);
   }
 
-  // ─────────────────────────────────────────────────────────────────
-  // Large logo — Row: image + "MileStory"
-  // ─────────────────────────────────────────────────────────────────
-
   Widget _buildFull(BuildContext context) {
     final c = AppColors.of(context);
     return Row(
@@ -26,7 +22,7 @@ class LogoWidget extends StatelessWidget {
         Image.asset(
           'assets/images/logo_milestory3.png',
           height: 42,
-          errorBuilder: (_, __, ___) => Container(
+          errorBuilder: (_, _, _) => Container(
             width: 42,
             height: 42,
             decoration: BoxDecoration(shape: BoxShape.circle, color: c.accent),
@@ -59,10 +55,6 @@ class LogoWidget extends StatelessWidget {
     );
   }
 
-  // ─────────────────────────────────────────────────────────────────
-  // Small logo — Column: image
-  // ─────────────────────────────────────────────────────────────────
-
   Widget _buildCompact(BuildContext context) {
     final c = AppColors.of(context);
     return Column(
@@ -71,7 +63,7 @@ class LogoWidget extends StatelessWidget {
         Image.asset(
           'assets/images/logo_milestory3.png',
           height: 30,
-          errorBuilder: (_, __, ___) => Container(
+          errorBuilder: (_, _, _) => Container(
             width: 28,
             height: 30,
             decoration: BoxDecoration(

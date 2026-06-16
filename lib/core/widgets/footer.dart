@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../theme/colors.dart';
+import '../theme/colors.dart';
 
 class FooterWidget extends StatelessWidget {
   const FooterWidget({super.key});
@@ -12,10 +12,9 @@ class FooterWidget extends StatelessWidget {
     final c = AppColors.of(context);
     final tt = Theme.of(context).textTheme;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 25),
       width: double.infinity,
       decoration: BoxDecoration(
-        //color: Colors.amber,
         border: Border(top: BorderSide(color: c.accentBorder)),
       ),
       child: Column(

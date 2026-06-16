@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../theme/colors.dart';
+import '../theme/colors.dart';
 
 class AppContainer extends StatelessWidget {
   final Widget child;
@@ -65,6 +65,3 @@ class AppContainer extends StatelessWidget {
     );
   }
 }
-
-
-

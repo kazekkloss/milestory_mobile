@@ -1,4 +1,4 @@
-import '../core_export.dart';
+import 'ui_event.dart';
 
 abstract class DataState<T> {
   final T? data;
