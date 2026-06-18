@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
+		229DEB3F2FE1B05C0027CFF9 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 229DEB3D2FE1B05C0027CFF9 /* LocationManager.swift */; };
+		229DEB402FE1B05C0027CFF9 /* TourTrackerChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 229DEB3C2FE1B05C0027CFF9 /* TourTrackerChannel.swift */; };
+		229DEB412FE1B05C0027CFF9 /* CheckPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 229DEB422FE1B05C0027CFF9 /* CheckPoint.swift */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
@@ -46,6 +49,9 @@
 		0C2C6DBB5C762610F57F5747 /* Pods_RunnerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RunnerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
+		229DEB3C2FE1B05C0027CFF9 /* TourTrackerChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourTrackerChannel.swift; sourceTree = "<group>"; };
+		229DEB3D2FE1B05C0027CFF9 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		229DEB422FE1B05C0027CFF9 /* CheckPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckPoint.swift; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
@@ -89,6 +95,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		229DEB3E2FE1B05C0027CFF9 /* TourTracker */ = {
+			isa = PBXGroup;
+			children = (
+				229DEB422FE1B05C0027CFF9 /* CheckPoint.swift */,
+				229DEB3C2FE1B05C0027CFF9 /* TourTrackerChannel.swift */,
+				229DEB3D2FE1B05C0027CFF9 /* LocationManager.swift */,
+			);
+			path = TourTracker;
+			sourceTree = "<group>";
+		};
 		331C8082294A63A400263BE5 /* RunnerTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -141,6 +157,7 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				229DEB3E2FE1B05C0027CFF9 /* Location */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
@@ -381,6 +398,9 @@
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				229DEB3F2FE1B05C0027CFF9 /* LocationManager.swift in Sources */,
+				229DEB402FE1B05C0027CFF9 /* TourTrackerChannel.swift in Sources */,
+				229DEB412FE1B05C0027CFF9 /* CheckPoint.swift in Sources */,
 				7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

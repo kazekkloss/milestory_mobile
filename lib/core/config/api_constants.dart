@@ -19,4 +19,5 @@ class ApiConstants {
 
   // TOUR POINTS
   static const String getTourPoints = '$baseUrl/get-tour-points';
+  static const String getAudioUrl = '$baseUrl/get-audio-url';
 }

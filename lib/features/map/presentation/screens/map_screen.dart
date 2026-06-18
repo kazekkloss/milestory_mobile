@@ -17,18 +17,20 @@ class TourMapScreen extends StatefulWidget {
 }
 
 class _TourMapScreenState extends State<TourMapScreen> {
-  late MapBloc _creatorBloc;
+  late MapBloc _bloc;
   final _mapController = MapController();
+  final _hitNotifier = LayerHitNotifier<String>(null);
 
   @override
   void initState() {
     super.initState();
-    _creatorBloc = context.read<MapBloc>();
-    _creatorBloc.add(GetTourPointsEvent(tourId: widget.tour.id!));
+    _bloc = context.read<MapBloc>();
+    _bloc.add(GetTourPointsEvent(tourId: widget.tour.id!));
   }
 
   @override
   void dispose() {
+    _bloc.add(StopLocationTrackingEvent());
     _mapController.dispose();
     super.dispose();
   }
@@ -39,48 +41,81 @@ class _TourMapScreenState extends State<TourMapScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.tour.title)),
-      body: GlobalErrorListener(
-        child: Stack(
-          children: [
-            FlutterMap(
-              mapController: _mapController,
-              options: const MapOptions(
-                initialCenter: ll2.LatLng(50.091506, 20.010941),
-                initialZoom: 13,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate:
-                      'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=$apiKey',
+      body: BlocListener<MapBloc, MapState>(
+        listenWhen: (prev, curr) =>
+            prev.tourPoints.isEmpty && curr.tourPoints.isNotEmpty,
+        listener: (_, _) => _bloc.add(StartLocationTrackingEvent()),
+        child: GlobalErrorListener(
+          child: Stack(
+            children: [
+              BlocBuilder<MapBloc, MapState>(
+                builder: (context, state) => FlutterMap(
+                  mapController: _mapController,
+                  options: MapOptions(
+                    initialCenter: const ll2.LatLng(50.091506, 20.010941),
+                    initialZoom: 13,
+                    onTap: (_, _) {
+                      final hit = _hitNotifier.value;
+                      if (hit != null && hit.hitValues.isNotEmpty) {
+                        _bloc.add(SelectAreaEvent(areaId: hit.hitValues.first));
+                      }
+                    },
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          'https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=$apiKey',
+                    ),
+                    PolygonLayer<String>(
+                      polygons: state.polygons,
+                      hitNotifier: _hitNotifier,
+                    ),
+                    if (state.userLocation != null)
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                            point: state.userLocation!.toLatLng2(),
+                            width: 20,
+                            height: 20,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.blue,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
                 ),
-              ],
-            ),
-            Positioned(
-              right: 16,
-              bottom: 48,
-              child: Column(
-                children: [
-                  FloatingActionButton.small(
-                    heroTag: 'zoom_in',
-                    onPressed: () => _mapController.move(
-                      _mapController.camera.center,
-                      _mapController.camera.zoom + 1,
-                    ),
-                    child: const Icon(Icons.add),
-                  ),
-                  const SizedBox(height: 8),
-                  FloatingActionButton.small(
-                    heroTag: 'zoom_out',
-                    onPressed: () => _mapController.move(
-                      _mapController.camera.center,
-                      _mapController.camera.zoom - 1,
-                    ),
-                    child: const Icon(Icons.remove),
-                  ),
-                ],
               ),
-            ),
-          ],
+              Positioned(
+                right: 16,
+                bottom: 48,
+                child: Column(
+                  children: [
+                    FloatingActionButton.small(
+                      heroTag: 'zoom_in',
+                      onPressed: () => _mapController.move(
+                        _mapController.camera.center,
+                        _mapController.camera.zoom + 1,
+                      ),
+                      child: const Icon(Icons.add),
+                    ),
+                    const SizedBox(height: 8),
+                    FloatingActionButton.small(
+                      heroTag: 'zoom_out',
+                      onPressed: () => _mapController.move(
+                        _mapController.camera.center,
+                        _mapController.camera.zoom - 1,
+                      ),
+                      child: const Icon(Icons.remove),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

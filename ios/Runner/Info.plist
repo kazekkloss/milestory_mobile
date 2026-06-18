@@ -68,5 +68,14 @@
 		</array>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>Milestory używa lokalizacji, aby pokazać Twoją pozycję na trasie.</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>Milestory używa lokalizacji w tle, aby śledzić Twoją trasę nawet gdy ekran jest wyłączony.</string>
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>location</string>
+			<string>audio</string>
+		</array>
 	</dict>
 </plist>

@@ -38,12 +38,20 @@ import 'package:milestory_mobile/features/auth/domain/usecases/send_password_rec
     as _i1050;
 import 'package:milestory_mobile/features/auth/presentation/bloc/auth_bloc.dart'
     as _i291;
-import 'package:milestory_mobile/features/map/data/datasources/creator_data_source.dart'
-    as _i970;
+import 'package:milestory_mobile/features/map/data/datasources/map_data_source.dart'
+    as _i718;
 import 'package:milestory_mobile/features/map/data/repository/map_repository_impl.dart'
     as _i943;
+import 'package:milestory_mobile/features/map/data/repository/tour_tracking_repository_impl.dart'
+    as _i249;
+import 'package:milestory_mobile/features/map/data/services/tour_tracking_service.dart'
+    as _i99;
+import 'package:milestory_mobile/features/map/domain/repository/tour_tracking_repository.dart'
+    as _i438;
 import 'package:milestory_mobile/features/map/domain/usecases/get_tour_points.dart'
     as _i86;
+import 'package:milestory_mobile/features/map/domain/usecases/set_tour_points.dart'
+    as _i130;
 import 'package:milestory_mobile/features/map/map_export.dart' as _i864;
 import 'package:milestory_mobile/features/map/presentation/bloc/map_bloc.dart'
     as _i125;
@@ -69,12 +77,21 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => registerModule.secureStorage,
     );
+    gh.lazySingleton<_i99.TourTrackingService>(
+      () => _i99.TourTrackingService(),
+    );
+    gh.lazySingleton<_i438.TourTrackingRepository>(
+      () => _i249.TourTrackingRepositoryImpl(gh<_i99.TourTrackingService>()),
+    );
     await gh.factoryAsync<_i234.TokenManager>(
       () => registerModule.tokenManager(
         gh<_i361.Dio>(),
         gh<_i558.FlutterSecureStorage>(),
       ),
       preResolve: true,
+    );
+    gh.lazySingleton<_i130.SetTourPoints>(
+      () => _i130.SetTourPoints(gh<_i438.TourTrackingRepository>()),
     );
     gh.lazySingleton<_i620.ApiClient>(
       () => _i620.ApiClient(gh<_i361.Dio>(), gh<_i455.TokenManager>()),
@@ -85,9 +102,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i455.TokenManager>(),
       ),
     );
-    gh.lazySingleton<_i970.MapDataSource>(
-      () => _i970.CreatorDataSourceImpl(gh<_i455.ApiClient>()),
-    );
     gh.lazySingleton<_i983.AuthRepository>(
       () => _i24.AuthRepositoryImpl(authDataSource: gh<_i983.AuthDataSource>()),
     );
@@ -97,6 +111,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i870.TourRepository>(
       () =>
           _i810.TourRepositoryImpl(tourDataSource: gh<_i870.TourDataSource>()),
+    );
+    gh.lazySingleton<_i718.MapDataSource>(
+      () => _i718.CreatorDataSourceImpl(gh<_i455.ApiClient>()),
     );
     gh.lazySingleton<_i864.MapRepository>(
       () => _i943.MapRepositoryImpl(mapDataSource: gh<_i864.MapDataSource>()),
@@ -125,6 +142,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i380.SearchTour>(
       () => _i380.SearchTour(gh<_i870.TourRepository>()),
     );
+    gh.factory<_i125.MapBloc>(
+      () => _i125.MapBloc(
+        getTourPoints: gh<_i864.GetTourPoints>(),
+        setTourPoints: gh<_i864.SetTourPoints>(),
+        tourTrackingRepository: gh<_i864.TourTrackingRepository>(),
+        mapDataSource: gh<_i864.MapDataSource>(),
+      ),
+    );
     gh.factory<_i879.TourBloc>(
       () => _i879.TourBloc(searchTour: gh<_i870.SearchTour>()),
     );
@@ -137,9 +162,6 @@ extension GetItInjectableX on _i174.GetIt {
         sendPasswordRecoveryLink: gh<_i983.SendPasswordRecoveryLink>(),
         deleteUser: gh<_i983.DeleteUser>(),
       ),
-    );
-    gh.factory<_i125.MapBloc>(
-      () => _i125.MapBloc(getTourPoints: gh<_i864.GetTourPoints>()),
     );
     return this;
   }

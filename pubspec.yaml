@@ -52,6 +52,8 @@ dependencies:
   flutter_native_splash: ^2.4.0
   latlong2: ^0.9.1
   flutter_map: ^8.1.1
+  just_audio: ^0.9.43
+  audio_session: ^0.1.22
 
 dev_dependencies:
   flutter_test:
