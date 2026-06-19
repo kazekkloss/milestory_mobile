@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Packages
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -11,6 +12,7 @@ import 'package:get_it/get_it.dart';
 // Local
 import 'core/core_export.dart';
 import 'core/di/injection.dart' as di;
+import 'features/audio/audio_export.dart';
 import 'features/auth/auth_export.dart';
 import 'features/map/map_export.dart';
 import 'features/tour/tour_export.dart';
@@ -23,6 +25,18 @@ void main() async {
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     await dotenv.load(fileName: ".env");
     await di.init();
+
+    final audioHandler = await AudioService.init(
+      builder: () => AudioPlayerHandler(
+        audioSessionManager: GetIt.I<AudioSessionManager>(),
+      ),
+      config: const AudioServiceConfig(
+        androidNotificationChannelId: 'com.milestory.audio',
+        androidNotificationChannelName: 'MileStory Audio',
+        androidNotificationOngoing: true,
+      ),
+    );
+    GetIt.I.registerSingleton<AudioPlayerHandler>(audioHandler);
 
     runApp(const MileStoryApp());
   } catch (e, stack) {
@@ -43,6 +57,7 @@ class _MileStoryAppState extends State<MileStoryApp> {
   late final AuthBloc _authBloc;
   late final TourBloc _tourBloc;
   late final MapBloc _mapBloc;
+  late final AudioBloc _audioBloc;
   late final AppRouter _appRouter;
 
   @override
@@ -51,6 +66,7 @@ class _MileStoryAppState extends State<MileStoryApp> {
     _authBloc = GetIt.I<AuthBloc>();
     _tourBloc = GetIt.I<TourBloc>();
     _mapBloc = GetIt.I<MapBloc>();
+    _audioBloc = GetIt.I<AudioBloc>();
     _appRouter = AppRouter(authBloc: _authBloc);
   }
 
@@ -67,6 +83,7 @@ class _MileStoryAppState extends State<MileStoryApp> {
         BlocProvider.value(value: _authBloc),
         BlocProvider.value(value: _tourBloc),
         BlocProvider.value(value: _mapBloc),
+        BlocProvider.value(value: _audioBloc),
       ],
       child: MaterialApp.router(
         theme: CustomTheme.darkTheme,

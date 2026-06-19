@@ -54,6 +54,7 @@ dependencies:
   flutter_map: ^8.1.1
   just_audio: ^0.9.43
   audio_session: ^0.1.22
+  audio_service: ^0.18.0
 
 dev_dependencies:
   flutter_test:

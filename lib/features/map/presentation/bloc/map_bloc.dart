@@ -4,9 +4,11 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/core_export.dart';
+import '../../../audio/audio_export.dart';
 import '../../map_export.dart';
 
 part 'map_event.dart';
@@ -17,7 +19,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   final GetTourPoints _getTourPoints;
   final SetTourPoints _setTourPoints;
   final TourTrackingRepository _tourTrackingRepository;
-  final MapDataSource _mapDataSource;
   StreamSubscription<LatLng>? _locationSubscription;
   StreamSubscription<CheckpointHit>? _checkpointSubscription;
 
@@ -25,7 +26,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     required this._getTourPoints,
     required this._setTourPoints,
     required this._tourTrackingRepository,
-    required this._mapDataSource,
   })  : super(MapState.initial()) {
     on<GetTourPointsEvent>(_onGetTourPoints);
     on<SelectAreaEvent>(_onSelectArea);
@@ -142,13 +142,11 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       debugPrint('[AudioUrl] no audioFileId for tourPoint ${event.hit.tourPointId} — skipping');
       return;
     }
-    debugPrint('[AudioUrl] requesting url for audioFileId: $audioFileId');
-    final result = await _mapDataSource.getAudioUrl(audioFileId: audioFileId);
-    if (result is DataSuccess<String>) {
-      debugPrint('[AudioUrl] got url: ${result.data}');
-    } else {
-      debugPrint('[AudioUrl] error: ${result.uiEvent?.message}');
-    }
+    debugPrint('[AudioUrl] dispatching play for audioFileId: $audioFileId');
+    GetIt.I<AudioBloc>().add(PlayAudioEvent(
+      audioFileId: audioFileId,
+      title: tourPoint.title ?? '',
+    ));
   }
 
   void _onStreamError(

@@ -17,6 +17,17 @@ import 'package:milestory_mobile/core/core_export.dart' as _i455;
 import 'package:milestory_mobile/core/di/injection.dart' as _i259;
 import 'package:milestory_mobile/core/network/api_client.dart' as _i620;
 import 'package:milestory_mobile/core/services/token_manager.dart' as _i234;
+import 'package:milestory_mobile/features/audio/audio_export.dart' as _i862;
+import 'package:milestory_mobile/features/audio/data/datasources/audio_data_source.dart'
+    as _i1072;
+import 'package:milestory_mobile/features/audio/data/repository/audio_repository_impl.dart'
+    as _i490;
+import 'package:milestory_mobile/features/audio/data/services/audio_session_manager.dart'
+    as _i21;
+import 'package:milestory_mobile/features/audio/domain/usecases/get_audio_url.dart'
+    as _i1020;
+import 'package:milestory_mobile/features/audio/presentation/bloc/audio_bloc.dart'
+    as _i410;
 import 'package:milestory_mobile/features/auth/auth_export.dart' as _i983;
 import 'package:milestory_mobile/features/auth/data/datasources/auth_data_source.dart'
     as _i404;
@@ -77,6 +88,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => registerModule.secureStorage,
     );
+    gh.lazySingleton<_i21.AudioSessionManager>(
+      () => _i21.AudioSessionManager(),
+    );
     gh.lazySingleton<_i99.TourTrackingService>(
       () => _i99.TourTrackingService(),
     );
@@ -102,6 +116,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i455.TokenManager>(),
       ),
     );
+    gh.lazySingleton<_i1072.AudioDataSource>(
+      () => _i1072.AudioDataSourceImpl(gh<_i455.ApiClient>()),
+    );
     gh.lazySingleton<_i983.AuthRepository>(
       () => _i24.AuthRepositoryImpl(authDataSource: gh<_i983.AuthDataSource>()),
     );
@@ -114,6 +131,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i718.MapDataSource>(
       () => _i718.CreatorDataSourceImpl(gh<_i455.ApiClient>()),
+    );
+    gh.lazySingleton<_i862.AudioRepository>(
+      () => _i490.AudioRepositoryImpl(gh<_i862.AudioDataSource>()),
     );
     gh.lazySingleton<_i864.MapRepository>(
       () => _i943.MapRepositoryImpl(mapDataSource: gh<_i864.MapDataSource>()),
@@ -142,12 +162,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i380.SearchTour>(
       () => _i380.SearchTour(gh<_i870.TourRepository>()),
     );
+    gh.lazySingleton<_i1020.GetAudioUrl>(
+      () => _i1020.GetAudioUrl(gh<_i862.AudioRepository>()),
+    );
     gh.factory<_i125.MapBloc>(
       () => _i125.MapBloc(
         getTourPoints: gh<_i864.GetTourPoints>(),
         setTourPoints: gh<_i864.SetTourPoints>(),
         tourTrackingRepository: gh<_i864.TourTrackingRepository>(),
-        mapDataSource: gh<_i864.MapDataSource>(),
       ),
     );
     gh.factory<_i879.TourBloc>(
@@ -162,6 +184,9 @@ extension GetItInjectableX on _i174.GetIt {
         sendPasswordRecoveryLink: gh<_i983.SendPasswordRecoveryLink>(),
         deleteUser: gh<_i983.DeleteUser>(),
       ),
+    );
+    gh.lazySingleton<_i410.AudioBloc>(
+      () => _i410.AudioBloc(getAudioUrl: gh<_i862.GetAudioUrl>()),
     );
     return this;
   }
