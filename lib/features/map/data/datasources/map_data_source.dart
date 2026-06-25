@@ -1,6 +1,5 @@
 import 'package:injectable/injectable.dart';
 import '../../../../core/core_export.dart';
-import '../../map_export.dart';
 
 abstract class MapDataSource {
   Future<DataState<List<TourPointModel>>> getTourPoints(

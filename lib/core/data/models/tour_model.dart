@@ -16,6 +16,7 @@ class TourModel extends Tour {
     required super.audioFileName,
     super.imageUrl,
     super.imageFileName,
+    super.userOwner,
   });
 
   Map<String, dynamic> toJson() {
@@ -34,7 +35,7 @@ class TourModel extends Tour {
   }
 
   factory TourModel.fromJson(Map<String, dynamic> json) {
-    return TourModel(
+return TourModel(
       id: json['_id'],
       title: json['title'] ?? '',
       authorId: json['ownerId'] ?? '',
@@ -56,6 +57,9 @@ class TourModel extends Tour {
       imageUrl: json['imageUrl'],
       imageFileName: json['imageFileName'],
       pointLength: json['pointLength'] ?? 0,
+      userOwner: json['userOwner'] != null
+          ? GuideUserModel.fromJson(json['userOwner'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -75,6 +79,7 @@ class TourModel extends Tour {
       imageUrl: tour.imageUrl,
       imageFileName: tour.imageFileName,
       pointLength: tour.pointLength,
+      userOwner: tour.userOwner,
     );
   }
 
@@ -96,6 +101,7 @@ class TourModel extends Tour {
       imageUrl: tourModel.imageUrl,
       imageFileName: tourModel.imageFileName,
       pointLength: tourModel.pointLength,
+      userOwner: tourModel.userOwner,
     );
   }
 }

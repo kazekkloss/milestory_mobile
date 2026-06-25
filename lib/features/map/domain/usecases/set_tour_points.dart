@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import '../entities/tour_point_entity.dart';
+import '../../../../core/core_export.dart';
 import '../repository/tour_tracking_repository.dart';
 
 @lazySingleton

@@ -1,4 +1,6 @@
-import '../../map_export.dart';
+import '../../domain/entities/tour_point_entity.dart';
+import '../../domain/entities/area_entity.dart';
+import 'area_model.dart';
 
 class TourPointModel extends TourPoint {
   const TourPointModel({
@@ -65,22 +67,22 @@ class TourPointModel extends TourPoint {
     );
   }
 
-  static TourPoint toEntity(TourPointModel tourPointModel) {
-    final List<Area> areas = tourPointModel.areas
+  static TourPoint toEntity(TourPointModel model) {
+    final List<Area> areas = model.areas
         .map((area) => AreaModel.toEntity(AreaModel.fromEntity(area)))
         .toList();
     return TourPoint(
-      id: tourPointModel.id,
-      externalId: tourPointModel.externalId,
-      tourId: tourPointModel.tourId,
-      title: tourPointModel.title,
-      description: tourPointModel.description,
+      id: model.id,
+      externalId: model.externalId,
+      tourId: model.tourId,
+      title: model.title,
+      description: model.description,
       areas: areas,
-      audioFileId: tourPointModel.audioFileId,
-      audioFileName: tourPointModel.audioFileName,
-      audioDuration: tourPointModel.audioDuration,
-      imageUrl: tourPointModel.imageUrl,
-      imageFileName: tourPointModel.imageFileName,
+      audioFileId: model.audioFileId,
+      audioFileName: model.audioFileName,
+      audioDuration: model.audioDuration,
+      imageUrl: model.imageUrl,
+      imageFileName: model.imageFileName,
     );
   }
 }

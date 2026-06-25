@@ -1,6 +1,5 @@
+import '../../../../core/core_export.dart';
 import '../entities/checkpoint_hit.dart';
-import '../entities/lat_lng_entity.dart';
-import '../entities/tour_point_entity.dart';
 
 abstract class TourTrackingRepository {
   Future<void> requestPermission();

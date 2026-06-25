@@ -1,8 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/core_export.dart';
 import '../../domain/entities/checkpoint_hit.dart';
-import '../../domain/entities/lat_lng_entity.dart';
 
 @lazySingleton
 class TourTrackingService {

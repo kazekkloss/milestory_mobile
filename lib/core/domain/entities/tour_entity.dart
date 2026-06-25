@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../enums/tour_status.dart';
 import '../../enums/transport_mode.dart';
+import 'guide_user_entity.dart';
 
 class Tour extends Equatable {
   final String? id;
@@ -25,6 +26,8 @@ class Tour extends Equatable {
   final String? audioFileId;
   final String audioFileName;
 
+  final GuideUser? userOwner;
+
   const Tour({
     this.id,
     required this.title,
@@ -43,6 +46,7 @@ class Tour extends Equatable {
     this.imageFileName,
     this.imageUrl,
     this.imageUrlToDelete,
+    this.userOwner,
   });
 
   Tour copyWith({
@@ -63,6 +67,7 @@ class Tour extends Equatable {
     Uint8List? audioFile,
     String? audioFileId,
     String? audioFileName,
+    Object? userOwner = _undefined,
   }) {
     return Tour(
       id: id ?? this.id,
@@ -88,6 +93,7 @@ class Tour extends Equatable {
       audioFile: audioFile ?? this.audioFile,
       audioFileId: audioFileId ?? this.audioFileId,
       audioFileName: audioFileName ?? this.audioFileName,
+      userOwner: userOwner == _undefined ? this.userOwner : userOwner as GuideUser?,
     );
   }
 
@@ -111,6 +117,7 @@ class Tour extends Equatable {
     image,
     imageUrl,
     imageFileName,
+    userOwner,
   ];
 
   static const empty = Tour(

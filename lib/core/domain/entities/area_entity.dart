@@ -17,9 +17,7 @@ class Area extends Equatable {
   }) {
     return Area(
       id: id ?? this.id,
-      direction: direction == _undefined
-          ? this.direction
-          : direction as double?,
+      direction: direction == _undefined ? this.direction : direction as double?,
       latLng: latLng ?? this.latLng,
     );
   }

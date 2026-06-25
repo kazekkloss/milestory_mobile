@@ -1,8 +1,7 @@
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/core_export.dart';
 import '../../domain/entities/checkpoint_hit.dart';
-import '../../domain/entities/lat_lng_entity.dart';
-import '../../domain/entities/tour_point_entity.dart';
 import '../../domain/repository/tour_tracking_repository.dart';
 import '../services/tour_tracking_service.dart';
 

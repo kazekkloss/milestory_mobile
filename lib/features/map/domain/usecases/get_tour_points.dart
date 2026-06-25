@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import 'package:milestory_mobile/core/error/response.dart';
+import '../../../../core/core_export.dart';
 import '../../map_export.dart';
 
 @lazySingleton

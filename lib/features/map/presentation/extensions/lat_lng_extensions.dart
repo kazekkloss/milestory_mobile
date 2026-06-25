@@ -1,5 +1,5 @@
 import 'package:latlong2/latlong.dart' as ll2;
-import '../../domain/entities/lat_lng_entity.dart';
+import '../../../../core/domain/entities/lat_lng_entity.dart';
 
 extension LatLngToMap on LatLng {
   ll2.LatLng toLatLng2() => ll2.LatLng(latitude, longitude);

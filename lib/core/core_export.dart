@@ -6,10 +6,17 @@ export 'enums/tour_status.dart';
 export 'enums/transport_mode.dart';
 
 // Entities
+export 'domain/entities/lat_lng_entity.dart';
+export 'domain/entities/area_entity.dart';
+export 'domain/entities/tour_point_entity.dart';
 export 'domain/entities/tour_entity.dart';
+export 'domain/entities/guide_user_entity.dart';
 
 // Models
+export 'data/models/area_model.dart';
+export 'data/models/tour_point_model.dart';
 export 'data/models/tour_model.dart';
+export 'data/models/guide_user_model.dart';
 
 // Error
 export 'error/ui_event.dart';
@@ -38,6 +45,7 @@ export 'widgets/logo.dart';
 export 'widgets/custom_elevated_button.dart';
 export 'widgets/footer.dart';
 export 'widgets/nav_bar.dart';
+export 'widgets/image.dart';
 
 // Theme
 export 'theme/colors.dart';
