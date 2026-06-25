@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+
 class NavBar extends StatefulWidget {
   final Widget child;
   final List<NavBarItem> tabs;
@@ -73,7 +74,7 @@ class _BottomBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isSelected ? primaryColor : const Color(0xFF787878);
+    final color = isSelected ? primaryColor : Colors.white;
 
     return GestureDetector(
       onTap: onTap,

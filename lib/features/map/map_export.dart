@@ -15,3 +15,4 @@ export 'domain/repository/tour_tracking_repository.dart';
 export 'presentation/extensions/lat_lng_extensions.dart';
 export 'presentation/screens/map_screen.dart';
 export 'presentation/bloc/map_bloc.dart';
+export 'presentation/widgets/tour_points_section.dart';

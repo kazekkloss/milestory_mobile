@@ -80,6 +80,7 @@ return TourModel(
       imageFileName: tour.imageFileName,
       pointLength: tour.pointLength,
       userOwner: tour.userOwner,
+      // tourPoints not serialized — populated at runtime by TourDetailBloc
     );
   }
 

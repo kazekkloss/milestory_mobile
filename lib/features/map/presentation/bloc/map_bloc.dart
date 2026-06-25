@@ -62,6 +62,10 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     GetTourPointsEvent event,
     Emitter<MapState> emit,
   ) async {
+    final alreadyLoaded = state.tourPoints.isNotEmpty &&
+        state.tourPoints.first.tourId == event.tourId;
+    if (alreadyLoaded) return;
+
     emit(state.copyWith(uiEvent: null));
 
     final response = await _getTourPoints(tourId: event.tourId);

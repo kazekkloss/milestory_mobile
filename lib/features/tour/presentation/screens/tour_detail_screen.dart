@@ -2,140 +2,162 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/core_export.dart';
+import '../../../map/presentation/widgets/tour_points_section.dart';
 
-class TourDetailScreen extends StatelessWidget {
+class TourDetailScreen extends StatefulWidget {
   final Tour tour;
 
   const TourDetailScreen({super.key, required this.tour});
 
   @override
+  State<TourDetailScreen> createState() => _TourDetailScreenState();
+}
+
+class _TourDetailScreenState extends State<TourDetailScreen> {
+  bool _isSaved = false;
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final horizontalPadding = SizeConfig.horizontalPadding;
+    final tour = widget.tour;
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 280,
-            pinned: true,
-            stretch: true,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.pop(),
-            ),
-            flexibleSpace: FlexibleSpaceBar(
-              centerTitle: false,
-              titlePadding: EdgeInsets.only(left: horizontalPadding),
-              title: Text(
-                tour.title,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.push('/home/tour/${tour.id}/map', extra: tour),
+        child: const Icon(Icons.play_arrow_rounded),
+      ),
+      body: SafeArea(
+        top: false,
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              actionsPadding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              expandedHeight: 280,
+              pinned: true,
+              stretch: true,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => context.pop(),
               ),
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  _TourImage(tour: tour),
-                  const DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [
-                          Colors.black,
-                          Color(0x99000000),
-                          Colors.transparent,
-                        ],
-                        stops: [0.0, 0.30, 1.0],
-                      ),
-                    ),
+              actions: [
+                IconButton(
+                  onPressed: () => setState(() => _isSaved = !_isSaved),
+                  icon: Icon(
+                    _isSaved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded,
                   ),
-                ],
-              ),
-              stretchModes: const [
-                StretchMode.zoomBackground,
-                StretchMode.blurBackground,
+                ),
               ],
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 10),
-                  Row(
-                    spacing: 15,
-                    children: [
-                    ImageNetwork(imageUrl: tour.userOwner!.avatarUrl, width: 30, height: 30),
-                    Text(tour.userOwner!.name),
-                  ]),
-                  SizedBox(height: 20),
-                  Row(
-                    children: [
-                      _InfoChip(
-                        icon: TransportModeData.mapRouteEnumToIcon(
-                          tour.transportMode,
-                        ).icon!,
-                        label: TransportModeData.mapRouteEnumToString(
-                          tour.transportMode,
+              flexibleSpace: FlexibleSpaceBar(
+                centerTitle: true,
+                titlePadding: const EdgeInsets.only(bottom: 16),
+                title: Text(
+                  tour.title,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                background: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    _TourImage(tour: tour),
+                    const DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [
+                            Colors.black,
+                            Color(0x99000000),
+                            Colors.transparent,
+                          ],
+                          stops: [0.0, 0.30, 1.0],
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      _InfoChip(
-                        icon: Icons.place_outlined,
-                        label: '${tour.pointLength} punktów',
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Opis',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(tour.description, style: theme.textTheme.bodyMedium),
-                  if (tour.createdAt != null) ...[
-                    const SizedBox(height: 20),
-                    _DateRow(
-                      icon: Icons.calendar_today_outlined,
-                      label: 'Dodano',
-                      date: tour.createdAt!,
                     ),
                   ],
-                  if (tour.updatedAt != null) ...[
-                    const SizedBox(height: 6),
-                    _DateRow(
-                      icon: Icons.update_outlined,
-                      label: 'Zaktualizowano',
-                      date: tour.updatedAt!,
-                    ),
-                  ],
-                  const SizedBox(height: 32),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      onPressed: () => context.push(
-                        '/home/tour/${tour.id}/map',
-                        extra: tour,
-                      ),
-                      icon: const Icon(Icons.map_outlined),
-                      label: const Text('Rozpocznij trasę'),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
+                ),
+                stretchModes: const [
+                  StretchMode.zoomBackground,
+                  StretchMode.blurBackground,
                 ],
               ),
             ),
-          ),
-        ],
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 10),
+                    if (tour.userOwner != null)
+                      Row(
+                        spacing: 15,
+                        children: [
+                          ImageNetwork(
+                            imageUrl: tour.userOwner!.avatarUrl,
+                            width: 30,
+                            height: 30,
+                          ),
+                          Text(tour.userOwner!.name),
+                        ],
+                      ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        _InfoChip(
+                          icon: TransportModeData.mapRouteEnumToIcon(
+                            tour.transportMode,
+                          ).icon!,
+                          label: TransportModeData.mapRouteEnumToString(
+                            tour.transportMode,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        _InfoChip(
+                          icon: Icons.place_outlined,
+                          label: '${tour.pointLength} punktów',
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Opis',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(tour.description, style: theme.textTheme.bodyMedium),
+                    if (tour.createdAt != null) ...[
+                      const SizedBox(height: 20),
+                      _DateRow(
+                        icon: Icons.calendar_today_outlined,
+                        label: 'Dodano',
+                        date: tour.createdAt!,
+                      ),
+                    ],
+                    if (tour.updatedAt != null) ...[
+                      const SizedBox(height: 6),
+                      _DateRow(
+                        icon: Icons.update_outlined,
+                        label: 'Zaktualizowano',
+                        date: tour.updatedAt!,
+                      ),
+                    ],
+                    const SizedBox(height: 32),
+                    TourPointsSection(tourId: tour.id!),
+                    const SizedBox(height: 88),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -148,38 +170,28 @@ class _TourImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     if (tour.image != null) {
-      return Image.memory(
-        tour.image!,
-        fit: BoxFit.cover,
-        width: double.infinity,
-        height: double.infinity,
-      );
+      return Image.memory(tour.image!, fit: BoxFit.cover);
     }
 
     if (tour.imageUrl != null) {
       return Image.network(
         tour.imageUrl!,
         fit: BoxFit.cover,
-        width: double.infinity,
-        height: double.infinity,
-        errorBuilder: (_, _, _) => _Placeholder(colorScheme: colorScheme),
+        errorBuilder: (_, _, _) => const _Placeholder(),
       );
     }
 
-    return _Placeholder(colorScheme: colorScheme);
+    return const _Placeholder();
   }
 }
 
 class _Placeholder extends StatelessWidget {
-  const _Placeholder({required this.colorScheme});
-
-  final ColorScheme colorScheme;
+  const _Placeholder();
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       color: colorScheme.surfaceContainerHighest,
       child: Center(
@@ -194,10 +206,7 @@ class _Placeholder extends StatelessWidget {
 }
 
 class _InfoChip extends StatelessWidget {
-  const _InfoChip({
-    required this.icon,
-    required this.label,
-  });
+  const _InfoChip({required this.icon, required this.label});
 
   final IconData icon;
   final String label;
@@ -209,10 +218,9 @@ class _InfoChip extends StatelessWidget {
     return AppContainer(
       height: 100,
       width: 100,
-      padding: EdgeInsets.all(0),
+      padding: EdgeInsets.zero,
       child: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 22, color: accent),
             const SizedBox(height: 6),
@@ -239,8 +247,9 @@ class _DateRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
 
     return Row(
       children: [

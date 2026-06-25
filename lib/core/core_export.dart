@@ -57,3 +57,4 @@ export 'theme/elevated_button.dart';
 export 'theme/outlined_button.dart';
 export 'theme/tab_bar_theme.dart';
 export 'theme/snack_bar_theme.dart';
+export 'theme/floating_action_button.dart';

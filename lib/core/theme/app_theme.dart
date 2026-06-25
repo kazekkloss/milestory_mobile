@@ -50,6 +50,7 @@ class CustomTheme {
       // ── Buttons ──
       elevatedButtonTheme: CustomElevatedButtonTheme.build(colors),
       outlinedButtonTheme: CustomOutlinedButtonTheme.build(colors),
+      floatingActionButtonTheme: CustomFloatingActionButtonTheme.build(colors),
 
       // ── Rest components ──
        tabBarTheme: CustomTabBarTheme.build(colors),
@@ -63,6 +64,11 @@ class CustomTheme {
 
       // ── Icon ──
       iconTheme: IconThemeData(color: colors.textPrimary),
+      appBarTheme: AppBarTheme(
+        iconTheme: const IconThemeData(color: Colors.white),
+        actionsIconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: Color(0xFF0A0A0A),
+      ),
     );
   }
 }
