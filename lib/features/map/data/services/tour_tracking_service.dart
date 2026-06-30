@@ -12,6 +12,12 @@ class TourTrackingService {
 
   Future<void> requestPermission() => _method.invokeMethod('requestPermission');
 
+  Future<bool> isIgnoringBatteryOptimizations() async =>
+      (await _method.invokeMethod<bool>('isIgnoringBatteryOptimizations')) ?? false;
+
+  Future<void> requestIgnoreBatteryOptimizations() =>
+      _method.invokeMethod('requestIgnoreBatteryOptimizations');
+
   Future<void> startTracking() => _method.invokeMethod('startTracking');
 
   Future<void> stopTracking() => _method.invokeMethod('stopTracking');

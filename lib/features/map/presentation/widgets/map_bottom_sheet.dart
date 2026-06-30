@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:milestory_mobile/core/extensions/size_extensions.dart';
+import 'package:milestory_mobile/features/map/map_export.dart';
 
+import '../../../../core/core_export.dart';
 import '../../../audio/audio_export.dart';
 import '../bloc/map_bloc.dart';
 
@@ -12,13 +13,24 @@ class MapBottomSheet extends StatefulWidget {
   State<MapBottomSheet> createState() => _MapBottomSheetState();
 }
 
-class _MapBottomSheetState extends State<MapBottomSheet> {
+class _MapBottomSheetState extends State<MapBottomSheet>
+    with SingleTickerProviderStateMixin {
   bool _isExpanded = false;
   bool _isAutoMode = true;
+  late final TabController _tabController = TabController(
+    length: 2,
+    vsync: this,
+  );
 
   static const _radius = BorderRadius.vertical(top: Radius.circular(20));
   // drag handle (~24px) + player row (~72px) + padding bottom (16px)
   static const _kPlayerHeight = 120.0;
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   void _onHandleTap() {
     if (_isExpanded) {
@@ -28,10 +40,6 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
       });
       return;
     }
-
-    final hasActivePoint =
-        context.read<MapBloc>().state.activePoint != null;
-    if (!hasActivePoint) return;
 
     setState(() {
       _isExpanded = true;
@@ -101,24 +109,33 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
                             bottom: SizeConfig.horizontalPadding,
                           ),
                           child: AudioPlayerWidget(
-                            title: point?.title ??
-                                'Udaj się do obszaru na mapie',
+                            title:
+                                point?.title ?? 'Udaj się do obszaru na mapie',
                           ),
                         ),
-                        if (point?.description != null)
-                          Expanded(
-                            child: SingleChildScrollView(
-                              padding: const EdgeInsets.only(
-                                left: SizeConfig.horizontalPadding,
-                                right: SizeConfig.horizontalPadding,
-                                bottom: SizeConfig.horizontalPadding,
+
+                        TabBar(
+                          controller: _tabController,
+                          tabs: const [
+                            Tab(text: 'Opis'),
+                            Tab(text: 'Lista'),
+                          ],
+                        ),
+                        Expanded(
+                          child: TabBarView(
+                            controller: _tabController,
+                            children: [
+                              _DescriptionTab(point: point),
+                              SingleChildScrollView(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: SizeConfig.horizontalPadding,
+                                  vertical: 25,
+                                ),
+                                child: const TourPointsSection(),
                               ),
-                              child: Text(
-                                point!.description!,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            ),
+                            ],
                           ),
+                        ),
                       ],
                     ),
                   ),
@@ -127,6 +144,77 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _DescriptionTab extends StatelessWidget {
+  const _DescriptionTab({required this.point});
+
+  final TourPoint? point;
+
+  static String _areaLabel(int count) {
+    if (count == 1) return '1 obszar';
+    final lastDigit = count % 10;
+    final lastTwoDigits = count % 100;
+    if (lastDigit >= 2 &&
+        lastDigit <= 4 &&
+        !(lastTwoDigits >= 12 && lastTwoDigits <= 14)) {
+      return '$count obszary';
+    }
+    return '$count obszarów';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = AppColors.of(context);
+    final areaCount = point?.areas.length ?? 0;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(
+        horizontal: SizeConfig.horizontalPadding,
+        vertical: 25,
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ImageNetwork(
+                  imageUrl: point?.imageUrl,
+                  width: 120,
+                  height: 120,
+                  borderRadius: 16,
+                ),
+                if (point != null)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.layers_outlined, size: 14, color: colors.textSecondary),
+                      const SizedBox(width: 4),
+                      Text(
+                        _areaLabel(areaCount),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: colors.textSecondary,
+                            ),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                point?.description ?? 'Brak opisu dla tego przystanku.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

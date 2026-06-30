@@ -15,6 +15,12 @@ class TourTrackingRepositoryImpl implements TourTrackingRepository {
   Future<void> requestPermission() => _service.requestPermission();
 
   @override
+  Future<bool> isIgnoringBatteryOptimizations() => _service.isIgnoringBatteryOptimizations();
+
+  @override
+  Future<void> requestIgnoreBatteryOptimizations() => _service.requestIgnoreBatteryOptimizations();
+
+  @override
   Future<void> startTracking() => _service.startTracking();
 
   @override

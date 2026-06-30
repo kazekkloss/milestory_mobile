@@ -8,12 +8,14 @@ import android.content.Intent
 import android.location.Location
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 
 class LocationForegroundService : Service() {
 
     private lateinit var locationManager: LocationManager
+    private var wakeLock: PowerManager.WakeLock? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -30,6 +32,7 @@ class LocationForegroundService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand — starting foreground + location")
         startForeground(NOTIFICATION_ID, buildNotification())
+        acquireWakeLock()
         locationManager.start()
         return START_STICKY
     }
@@ -37,7 +40,38 @@ class LocationForegroundService : Service() {
     override fun onDestroy() {
         Log.d(TAG, "onDestroy — stopping location")
         locationManager.stop()
+        releaseWakeLock()
+        locationUpdateCallback = null
+        errorCallback = null
         super.onDestroy()
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        Log.d(TAG, "onTaskRemoved — app swiped away, stopping tracking")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            stopForeground(STOP_FOREGROUND_REMOVE)
+        } else {
+            @Suppress("DEPRECATION")
+            stopForeground(true)
+        }
+        stopSelf()
+        super.onTaskRemoved(rootIntent)
+    }
+
+    private fun acquireWakeLock() {
+        if (wakeLock?.isHeld == true) return
+        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        wakeLock = powerManager.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            "$TAG:locationTracking",
+        ).apply { acquire() }
+        Log.d(TAG, "wake lock acquired")
+    }
+
+    private fun releaseWakeLock() {
+        wakeLock?.let { if (it.isHeld) it.release() }
+        wakeLock = null
+        Log.d(TAG, "wake lock released")
     }
 
     override fun onBind(intent: Intent?): IBinder? = null

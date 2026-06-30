@@ -5,21 +5,22 @@ import '../../../../core/core_export.dart';
 import '../bloc/map_bloc.dart';
 
 class TourPointsSection extends StatefulWidget {
-  const TourPointsSection({super.key, required this.tourId});
+  const TourPointsSection({super.key, this.tourId});
 
-  final String tourId;
+  final String? tourId;
 
   @override
   State<TourPointsSection> createState() => _TourPointsSectionState();
 }
 
 class _TourPointsSectionState extends State<TourPointsSection> {
-  bool _expanded = false;
+  late bool _expanded = widget.tourId == null;
   int _shownCount = 3;
 
   void _onToggle(BuildContext context, MapState state) {
-    if (!_expanded && state.tourPoints.isEmpty) {
-      context.read<MapBloc>().add(GetTourPointsEvent(tourId: widget.tourId));
+    final tourId = widget.tourId;
+    if (!_expanded && tourId != null && state.tourPoints.isEmpty) {
+      context.read<MapBloc>().add(GetTourPointsEvent(tourId: tourId));
     }
     setState(() {
       _expanded = !_expanded;
@@ -50,10 +51,11 @@ class _TourPointsSectionState extends State<TourPointsSection> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                TextButton(
-                  onPressed: () => _onToggle(context, state),
-                  child: Text(_expanded ? 'Zwiń' : 'Pokaż przystanki'),
-                ),
+                if (widget.tourId != null)
+                  TextButton(
+                    onPressed: () => _onToggle(context, state),
+                    child: Text(_expanded ? 'Zwiń' : 'Pokaż przystanki'),
+                  ),
               ],
             ),
             ClipRect(

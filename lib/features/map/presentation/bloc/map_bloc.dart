@@ -95,6 +95,10 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   ) async {
     debugPrint('[TourTracker] requesting permission');
     await _tourTrackingRepository.requestPermission();
+    if (!await _tourTrackingRepository.isIgnoringBatteryOptimizations()) {
+      debugPrint('[TourTracker] requesting battery optimization exemption');
+      await _tourTrackingRepository.requestIgnoreBatteryOptimizations();
+    }
     debugPrint('[TourTracker] subscribing to streams');
     _locationSubscription = _tourTrackingRepository.locationStream.listen(
       (location) {
