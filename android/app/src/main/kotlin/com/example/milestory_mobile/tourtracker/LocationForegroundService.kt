@@ -21,7 +21,7 @@ class LocationForegroundService : Service() {
         super.onCreate()
         Log.d(TAG, "onCreate")
         locationManager = LocationManager(this).apply {
-            onLocationUpdate = { location -> locationUpdateCallback?.invoke(location) }
+            onLocationUpdate = { location, bearing -> locationUpdateCallback?.invoke(location, bearing) }
             onError = { message ->
                 Log.e(TAG, "location error: $message")
                 errorCallback?.invoke(message)
@@ -99,7 +99,7 @@ class LocationForegroundService : Service() {
         const val CHANNEL_ID = "milestory_tour_tracker"
         const val NOTIFICATION_ID = 1001
 
-        var locationUpdateCallback: ((Location) -> Unit)? = null
+        var locationUpdateCallback: ((Location, Double?) -> Unit)? = null
         var errorCallback: ((String) -> Unit)? = null
     }
 }

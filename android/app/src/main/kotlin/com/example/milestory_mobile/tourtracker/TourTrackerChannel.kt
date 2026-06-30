@@ -136,12 +136,12 @@ class TourTrackerChannel(private val activity: Activity) {
     private fun doStartForegroundService() {
         Log.d(TAG, "doStartForegroundService")
         pendingStart = false
-        LocationForegroundService.locationUpdateCallback = { location ->
+        LocationForegroundService.locationUpdateCallback = { location, bearing ->
             val lat = location.latitude
             val lng = location.longitude
-            Log.d(TAG, "location update: $lat, $lng")
+            Log.d(TAG, "location update: $lat, $lng, bearing: $bearing")
             locationSink?.success(mapOf("latitude" to lat, "longitude" to lng))
-            checkpoint.check(lat, lng)?.let { (tourPointId, areaId) ->
+            checkpoint.check(lat, lng, bearing)?.let { (tourPointId, areaId) ->
                 Log.d(TAG, "CHECKPOINT HIT — tourPoint: $tourPointId, area: $areaId")
                 checkpointSink?.success(mapOf("tourPointId" to tourPointId, "areaId" to areaId))
             }

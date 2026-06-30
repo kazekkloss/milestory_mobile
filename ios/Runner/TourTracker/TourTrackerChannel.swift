@@ -47,13 +47,13 @@ final class TourTrackerChannel: NSObject {
         )
         checkpointEventChannel.setStreamHandler(checkpointStreamHandler)
 
-        locationManager.onLocationUpdate = { [weak self] location in
+        locationManager.onLocationUpdate = { [weak self] location, bearing in
             guard let self else { return }
             let lat = location.coordinate.latitude
             let lng = location.coordinate.longitude
-            print("[TourTracker] location update: \(lat), \(lng)")
+            print("[TourTracker] location update: \(lat), \(lng), bearing: \(String(describing: bearing))")
             locationSink?(["latitude": lat, "longitude": lng])
-            if let hit = checkpoint.check(lat: lat, lng: lng) {
+            if let hit = checkpoint.check(lat: lat, lng: lng, bearing: bearing) {
                 print("[TourTracker] CHECKPOINT HIT — tourPoint: \(hit.tourPointId), area: \(hit.areaId)")
                 checkpointSink?(["tourPointId": hit.tourPointId, "areaId": hit.areaId])
             }

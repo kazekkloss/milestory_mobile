@@ -34,6 +34,7 @@ class TourTrackingRepositoryImpl implements TourTrackingRepository {
               'areas': tp.areas
                   .map((a) => {
                         'id': a.id,
+                        'direction': a.direction,
                         'coordinates': a.latLng
                             .map((ll) => {
                                   'latitude': ll.latitude,
