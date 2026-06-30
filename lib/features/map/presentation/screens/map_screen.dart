@@ -41,7 +41,7 @@ class _TourMapScreenState extends State<TourMapScreen> {
     final apiKey = dotenv.env['MAPTILER_API_KEY'] ?? '';
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.tour.title)),
+      extendBodyBehindAppBar: true,
       body: MultiBlocListener(
         listeners: [
           BlocListener<MapBloc, MapState>(
@@ -112,6 +112,8 @@ class _TourMapScreenState extends State<TourMapScreen> {
                   ],
                 ),
               ),
+              MapTopBar(title: widget.tour.title),
+              const MapBottomSheet(),
               Positioned(
                 right: 16,
                 top: 0,

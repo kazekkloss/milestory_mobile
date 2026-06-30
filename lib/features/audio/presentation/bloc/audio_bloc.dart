@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
@@ -52,6 +53,12 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
   }
 
   Future<void> _onPlay(PlayAudioEvent event, Emitter<AudioState> emit) async {
+    if (state.currentAudioFileId == event.audioFileId &&
+        (state.isPlaying || state.isLoading)) {
+      debugPrint('[Audio] play ignored — already playing: ${event.audioFileId}');
+      return;
+    }
+
     emit(state.copyWith(
       status: AudioStatus.loading,
       currentAudioFileId: event.audioFileId,
@@ -82,13 +89,13 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
   }
 
   Future<void> _onPause(PauseAudioEvent event, Emitter<AudioState> emit) async {
-    await _audioPlayerHandler.pause();
     emit(state.copyWith(status: AudioStatus.paused));
+    await _audioPlayerHandler.pause();
   }
 
   Future<void> _onResume(ResumeAudioEvent event, Emitter<AudioState> emit) async {
-    await _audioPlayerHandler.play();
     emit(state.copyWith(status: AudioStatus.playing));
+    await _audioPlayerHandler.play();
   }
 
   Future<void> _onSeek(SeekAudioEvent event, Emitter<AudioState> emit) async {

@@ -141,6 +141,14 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       (tp) => tp.id.toString() == event.hit.tourPointId,
       orElse: () => throw StateError('TourPoint not found: ${event.hit.tourPointId}'),
     );
+
+    if (state.activePoint?.id == tourPoint.id) {
+      debugPrint('[TourTracker] checkpoint ignored — already active: ${tourPoint.id}');
+      return;
+    }
+
+    emit(state.copyWith(activePoint: tourPoint));
+
     final audioFileId = tourPoint.audioFileId;
     if (audioFileId == null) {
       debugPrint('[AudioUrl] no audioFileId for tourPoint ${event.hit.tourPointId} — skipping');

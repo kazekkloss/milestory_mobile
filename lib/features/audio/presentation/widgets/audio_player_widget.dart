@@ -4,27 +4,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/core_export.dart';
 import '../../audio_export.dart';
 
-class AudioPlayerWidget extends StatelessWidget {
-  const AudioPlayerWidget({super.key});
+class AudioPlayerWidget extends StatefulWidget {
+  const AudioPlayerWidget({super.key, required this.title});
+
+  final String title;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AudioBloc, AudioState>(
-      builder: (context, state) {
-        if (state.status == AudioStatus.idle ||
-            state.currentAudioFileId == null) {
-          return const SizedBox.shrink();
-        }
-        return _AudioPlayerContent(state: state);
-      },
-    );
-  }
+  State<AudioPlayerWidget> createState() => _AudioPlayerWidgetState();
 }
 
-class _AudioPlayerContent extends StatelessWidget {
-  final AudioState state;
-
-  const _AudioPlayerContent({required this.state});
+class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
+  double? _dragValue;
 
   String _format(Duration d) {
     final m = d.inMinutes.remainder(60).toString().padLeft(2, '0');
@@ -35,117 +25,147 @@ class _AudioPlayerContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = AppColors.of(context);
-    final bloc = context.read<AudioBloc>();
 
-    final totalSeconds = state.duration.inSeconds;
-    final currentSeconds = state.position.inSeconds.clamp(0, totalSeconds);
-    final sliderValue =
-        totalSeconds > 0 ? currentSeconds / totalSeconds : 0.0;
+    return BlocBuilder<AudioBloc, AudioState>(
+      builder: (context, state) {
+        final bloc = context.read<AudioBloc>();
+        final totalSeconds = state.duration.inSeconds;
+        final sliderValue =
+            _dragValue ??
+            (totalSeconds > 0
+                ? state.position.inSeconds.clamp(0, totalSeconds) / totalSeconds
+                : 0.0);
+        final timeColor = state.currentAudioFileId != null
+            ? colors.textPrimary
+            : colors.textMuted;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: colors.bgElevated,
-        border: Border(
-          top: BorderSide(color: colors.borderSubtle),
-        ),
-      ),
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.music_note_rounded, color: colors.accent, size: 16),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  state.currentAudioFileId ?? '',
-                  style: TextStyle(
-                    color: colors.textPrimary,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
+        return Row(
+          children: [
+            _PlayPauseButton(state: state, colors: colors, bloc: bloc),
+            SizedBox(width: 5),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Text(
+                      widget.title,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      trackHeight: 2,
+                      thumbShape: const RoundSliderThumbShape(
+                        enabledThumbRadius: 6,
+                      ),
+                      overlayShape: const RoundSliderOverlayShape(
+                        overlayRadius: 12,
+                      ),
+                      activeTrackColor: colors.accent,
+                      inactiveTrackColor: colors.borderSubtle,
+                      thumbColor: colors.accent,
+                      overlayColor: colors.accentDim,
+                    ),
+                    child: Slider(
+                      value: sliderValue.toDouble(),
+                      onChanged: totalSeconds > 0
+                          ? (v) => setState(() => _dragValue = v)
+                          : null,
+                      onChangeEnd: totalSeconds > 0
+                          ? (v) {
+                              bloc.add(
+                                SeekAudioEvent(
+                                  Duration(
+                                    seconds: (v * totalSeconds).round(),
+                                  ),
+                                ),
+                              );
+                              setState(() => _dragValue = null);
+                            }
+                          : null,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _dragValue != null
+                              ? _format(
+                                  Duration(
+                                    seconds: (_dragValue! * totalSeconds)
+                                        .round(),
+                                  ),
+                                )
+                              : _format(state.position),
+                          style: TextStyle(color: timeColor, fontSize: 11),
+                        ),
+                        Text(
+                          _format(state.duration),
+                          style: TextStyle(color: timeColor, fontSize: 11),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              IconButton(
-                onPressed: () => bloc.add(StopAudioEvent()),
-                icon: Icon(Icons.close, color: colors.textMuted, size: 18),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              trackHeight: 2,
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-              overlayShape: const RoundSliderOverlayShape(overlayRadius: 12),
-              activeTrackColor: colors.accent,
-              inactiveTrackColor: colors.borderSubtle,
-              thumbColor: colors.accent,
-              overlayColor: colors.accentDim,
             ),
-            child: Slider(
-              value: sliderValue.toDouble(),
-              onChanged: totalSeconds > 0
-                  ? (v) => bloc.add(SeekAudioEvent(
-                        Duration(seconds: (v * totalSeconds).round()),
-                      ))
-                  : null,
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                _format(state.position),
-                style: TextStyle(color: colors.textMuted, fontSize: 11),
-              ),
-              _buildPlayPauseButton(context, colors, bloc),
-              Text(
-                _format(state.duration),
-                style: TextStyle(color: colors.textMuted, fontSize: 11),
-              ),
-            ],
-          ),
-        ],
-      ),
+          ],
+        );
+      },
     );
   }
+}
 
-  Widget _buildPlayPauseButton(
-      BuildContext context, AppColors colors, AudioBloc bloc) {
-    if (state.isLoading) {
-      return SizedBox(
-        width: 36,
-        height: 36,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          color: colors.accent,
-        ),
-      );
-    }
+class _PlayPauseButton extends StatelessWidget {
+  const _PlayPauseButton({
+    required this.state,
+    required this.colors,
+    required this.bloc,
+  });
 
-    return IconButton(
-      onPressed: () {
+  final AudioState state;
+  final AppColors colors;
+  final AudioBloc bloc;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
         if (state.isPlaying) {
           bloc.add(PauseAudioEvent());
         } else {
           bloc.add(ResumeAudioEvent());
         }
       },
-      icon: Icon(
-        state.isPlaying
-            ? Icons.pause_rounded
-            : Icons.play_arrow_rounded,
-        color: colors.accent,
-        size: 32,
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(color: colors.accent, shape: BoxShape.circle),
+        child: state.isLoading
+            ? const Padding(
+                padding: EdgeInsets.all(10),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.black,
+                ),
+              )
+            : Icon(
+                state.isPlaying
+                    ? Icons.pause_rounded
+                    : Icons.play_arrow_rounded,
+                color: Colors.black,
+                size: 20,
+              ),
       ),
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(),
     );
   }
 }

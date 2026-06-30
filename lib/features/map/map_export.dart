@@ -16,3 +16,5 @@ export 'presentation/extensions/lat_lng_extensions.dart';
 export 'presentation/screens/map_screen.dart';
 export 'presentation/bloc/map_bloc.dart';
 export 'presentation/widgets/tour_points_section.dart';
+export 'presentation/widgets/map_top_bar.dart';
+export 'presentation/widgets/map_bottom_sheet.dart';

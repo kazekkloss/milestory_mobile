@@ -44,7 +44,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     final source = AudioSource.uri(Uri.parse(url), tag: tag);
     mediaItem.add(tag);
     await _playlist.add(source);
-    await _player.play();
+    _player.play();
   }
 
   Stream<Duration> get positionStream => _player.positionStream;

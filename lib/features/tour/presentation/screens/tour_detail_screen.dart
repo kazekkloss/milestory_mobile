@@ -219,20 +219,19 @@ class _InfoChip extends StatelessWidget {
       height: 100,
       width: 100,
       padding: EdgeInsets.zero,
-      child: Center(
-        child: Column(
-          children: [
-            Icon(icon, size: 22, color: accent),
-            const SizedBox(height: 6),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: accent,
-              ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 22, color: accent),
+          const SizedBox(height: 6),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: accent,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

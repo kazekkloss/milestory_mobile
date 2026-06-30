@@ -53,12 +53,12 @@ class CustomTheme {
       floatingActionButtonTheme: CustomFloatingActionButtonTheme.build(colors),
 
       // ── Rest components ──
-       tabBarTheme: CustomTabBarTheme.build(colors),
+      tabBarTheme: CustomTabBarTheme.build(colors),
       // sliderTheme: CustomSliderTheme.build(colors),
       // expansionTileTheme: CustomExpansionTileTheme.build(colors),
       // dialogTheme: CustomDialogTheme.build(colors),
       // listTileTheme: CustomListTileTheme.build(colors),
-       snackBarTheme: CustomSnackBarTheme.build(colors),
+      snackBarTheme: CustomSnackBarTheme.build(colors),
       // dropdownMenuTheme: CustomDropdownMenuTheme.build(colors),
       // switchTheme: CustomSwitchTheme.build(colors),
 
@@ -67,7 +67,7 @@ class CustomTheme {
       appBarTheme: AppBarTheme(
         iconTheme: const IconThemeData(color: Colors.white),
         actionsIconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: Color(0xFF0A0A0A),
+        backgroundColor: Colors.black,
       ),
     );
   }
